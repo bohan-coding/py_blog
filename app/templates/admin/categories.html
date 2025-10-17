@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+
+{% block title %}分类管理 - 我的博客{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">分类管理</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                新建分类
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.new_category') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">分类名称</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">创建分类</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                分类列表
+            </div>
+            <div class="card-body">
+                {% if categories %}
+                    <div class="list-group">
+                        {% for category in categories %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ category.name }}
+                                <form method="POST" action="{{ url_for('admin.delete_category', id=category.id) }}"
+                                    onsubmit="return confirm('确定要删除这个分类吗？')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>暂无分类。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

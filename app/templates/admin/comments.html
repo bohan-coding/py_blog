@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+
+{% block title %}评论管理 - 我的博客{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">评论管理</h1>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>文章</th>
+                <th>作者</th>
+                <th>内容</th>
+                <th>状态</th>
+                <th>时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments.items %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td>
+                    <a href="{{ url_for('main.post', id=comment.post.id) }}" target="_blank">
+                        {{ comment.post.title }}
+                    </a>
+                </td>
+                <td>{{ comment.author_name or comment.author.username }}</td>
+                <td>{{ comment.content[:50] }}{% if comment.content|length > 50 %}...{% endif %}</td>
+                <td>
+                    {% if comment.is_approved %}
+                        <span class="badge bg-success">已批准</span>
+                    {% else %}
+                        <span class="badge bg-secondary">待审核</span>
+                    {% endif %}
+                </td>
+                <td>{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin.toggle_comment', id=comment.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            {% if comment.is_approved %}取消批准{% else %}批准{% endif %}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 分页 -->
+{% if comments.pages > 1 %}
+    <nav aria-label="评论分页">
+        <ul class="pagination">
+            {% if comments.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.comments', page=comments.prev_num) }}">上一页</a>
+                </li>
+            {% endif %}
+            
+            {% for page_num in comments.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != comments.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.comments', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if comments.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.comments', page=comments.next_num) }}">下一页</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}

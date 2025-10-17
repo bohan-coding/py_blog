@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+
+{% block title %}管理后台 - 我的博客{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">仪表板</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">文章总数</h5>
+                <p class="card-text display-4">{{ post_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">评论总数</h5>
+                <p class="card-text display-4">{{ comment_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                快速操作
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('admin.edit_post') }}" class="btn btn-primary">写文章</a>
+                <a href="{{ url_for('admin.posts') }}" class="btn btn-secondary">管理文章</a>
+                <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">管理分类</a>
+                <a href="{{ url_for('admin.comments') }}" class="btn btn-secondary">管理评论</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

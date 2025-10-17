@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - 我的博客{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- 主内容区 -->
+    <div class="col-lg-8 col-md-12">
+      <article class="article-detail">
+        <header class="article-header">
+          <h1 class="article-title">{{ post.title }}</h1>
+          <div class="article-meta">
+            <span class="meta-item">
+              <i class="fas fa-user"></i>
+              {{ post.author.username }}
+            </span>
+            <span class="meta-item">
+              <i class="fas fa-calendar"></i>
+              {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </span>
+            <span class="meta-item">
+              <i class="fas fa-sync-alt"></i>
+              {{ post.updated_at.strftime('%Y-%m-%d %H:%M') }}
+            </span>
+            <span class="meta-item">
+              <i class="fas fa-folder"></i>
+              {% if post.category %}
+                <a href="{{ url_for('main.category', id=post.category.id) }}">{{ post.category.name }}</a>
+              {% else %}
+                未分类
+              {% endif %}
+            </span>
+          </div>
+        </header>
+        
+        <div class="article-content">
+          {{ post.content|safe }}
+        </div>
+        
+        {% if post.tags %}
+        <div class="article-tags">
+          <h4>标签:</h4>
+          {% for tag in post.tags %}
+            <a href="{{ url_for('main.tag', id=tag.id) }}" class="tag">{{ tag.name }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </article>
+      
+      <hr>
+      
+      <!-- 评论区 -->
+      <div class="comments-section">
+        <h3>评论</h3>
+        
+        {% if comments %}
+          {% for comment in comments %}
+            <div class="comment-card">
+              <div class="comment-header">
+                <span class="comment-author">
+                  {% if comment.author %}
+                    {{ comment.author.username }}
+                  {% else %}
+                    {{ comment.author_name }}
+                  {% endif %}
+                </span>
+                <span class="comment-date">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+              <div class="comment-content">
+                <p>{{ comment.content }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="no-comments">暂无评论。</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div class="col-lg-4 col-md-12">
+      <aside class="sidebar">
+        <div class="widget">
+          <h3 class="widget-title">关于我</h3>
+          <div class="widget-content">
+            <p>欢迎来到我的个人博客！这里记录了我的技术学习和生活感悟。</p>
+          </div>
+        </div>
+        
+        <div class="widget">
+          <h3 class="widget-title">相关文章</h3>
+          <div class="widget-content">
+            {% if related_posts %}
+              <ul class="recent-posts">
+                {% for related_post in related_posts %}
+                  <li>
+                    <a href="{{ url_for('main.post', id=related_post.id) }}">{{ related_post.title }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>暂无相关文章</p>
+            {% endif %}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

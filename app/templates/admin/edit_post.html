@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ '编辑文章' if post.id else '新建文章' }} - 我的博客{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ '编辑文章' if post.id else '新建文章' }}</h1>
+</div>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="title" class="form-label">标题</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ post.title or '' }}" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="summary" class="form-label">摘要</label>
+        <textarea class="form-control" id="summary" name="summary" rows="3">{{ post.summary or '' }}</textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="content" class="form-label">内容</label>
+        <textarea class="form-control" id="content" name="content" rows="15" required>{{ post.content or '' }}</textarea>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="category" class="form-label">分类</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">请选择分类</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if post.category_id == category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="tags" class="form-label">标签</label>
+                <input type="text" class="form-control" id="tags" name="tags" 
+                       placeholder="多个标签用逗号分隔" value="{{ tag_list }}">
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="is_published" name="is_published" 
+               {% if post.is_published or not post.id %}checked{% endif %}>
+        <label class="form-check-label" for="is_published">发布</label>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a href="{{ url_for('admin.posts') }}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}
