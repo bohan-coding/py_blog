@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}天气查询 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>天气查询</h2>
+            
+            <!-- 查询表单 -->
+            <form method="POST" class="mb-4">
+                <!-- 使用隐藏字段方式添加CSRF令牌 -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="city" placeholder="请输入城市名称，例如：北京" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">查询天气</button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- 天气信息展示 -->
+            {% if weather_data %}
+                {% if weather_data.error %}
+                    <div class="alert alert-danger">
+                        {{ weather_data.error }}
+                    </div>
+                {% else %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>{{ weather_data.city }} 当前天气</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>温度：</strong>{{ weather_data.temperature }}°C</p>
+                                    <p><strong>天气状况：</strong>{{ weather_data.text }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>更新时间：</strong>{{ weather_data.last_update }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <!-- 天气预报展示 -->
+            {% if forecast_data %}
+                {% if forecast_data.error %}
+                    <div class="alert alert-danger">
+                        {{ forecast_data.error }}
+                    </div>
+                {% else %}
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3>{{ forecast_data.city }} 天气预报</h3>
+                        </div>
+                        <div class="card-body">
+                            {% for forecast in forecast_data.forecasts %}
+                            <div class="forecast-item border-bottom pb-2 mb-2">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>{{ forecast.date }}</strong>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ forecast.text_day }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ forecast.low }}°C ~ {{ forecast.high }}°C
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>使用说明</h4>
+                </div>
+                <div class="card-body">
+                    <p>输入您想查询的城市名称，点击查询按钮即可获取该城市的实时天气信息和未来几天的天气预报。</p>
+                    <p>支持大部分中国城市，例如：北京、上海、广州、深圳等。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
