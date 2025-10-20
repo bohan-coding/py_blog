@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{% block page_title %}电影清单{% endblock %} - Bohan Blog{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- 侧边栏 -->
+        <div class="col-md-3 col-lg-2 d-none d-md-block sidebar">
+            <div class="widget">
+                <h5 class="widget-title">电影分类</h5>
+                <div class="widget-content">
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('movies.movie_list') }}">全部</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', category='电影') }}">电影</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', category='电视剧') }}">电视剧</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="widget">
+                <h5 class="widget-title">热门类型</h5>
+                <div class="widget-content">
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('movies.movie_list', genre='剧情') }}">剧情</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', genre='喜剧') }}">喜剧</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', genre='动作') }}">动作</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', genre='科幻') }}">科幻</a></li>
+                        <li><a href="{{ url_for('movies.movie_list', genre='恐怖') }}">恐怖</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            {% if current_user.is_authenticated %}
+            <div class="widget">
+                <h5 class="widget-title">我的操作</h5>
+                <div class="widget-content">
+                    <ul class="list-unstyled">
+                        <li><a href="#">我的收藏</a></li>
+                        <li><a href="#">观看历史</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            {% block movie_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

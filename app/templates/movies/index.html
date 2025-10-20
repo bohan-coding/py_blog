@@ -1,0 +1,114 @@
+{% extends "movies/base.html" %}
+
+{% block page_title %}电影清单{% endblock %}
+
+{% block movie_content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">网飞电影清单</h1>
+    <p class="text-muted">发现最新和最高评分的网飞影视剧</p>
+</div>
+
+<!-- 推荐电影 -->
+{% if featured_movies %}
+<div class="mb-5">
+    <h2 class="mb-3">推荐影片</h2>
+    <div class="row">
+        {% for movie in featured_movies %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if movie.image_url %}
+                <img src="{{ movie.image_url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-film fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ movie.title }} ({{ movie.year }})</h5>
+                    <p class="card-text flex-grow-1">{{ movie.description[:100] }}{% if movie.description|length > 100 %}...{% endif %}</p>
+                    <div class="mt-auto">
+                        {% if movie.rating %}
+                        <div class="mb-2">
+                            <span class="badge bg-warning text-dark">评分: {{ movie.rating }}</span>
+                        </div>
+                        {% endif %}
+                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-primary">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- 最新电影 -->
+{% if latest_movies %}
+<div class="mb-5">
+    <h2 class="mb-3">最新添加</h2>
+    <div class="row">
+        {% for movie in latest_movies %}
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100">
+                {% if movie.image_url %}
+                <img src="{{ movie.image_url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 150px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                    <i class="fas fa-film fa-2x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">{{ movie.title }} ({{ movie.year }})</h6>
+                    <div class="mt-auto">
+                        {% if movie.rating %}
+                        <div class="mb-2">
+                            <small class="text-muted">评分: {{ movie.rating }}</small>
+                        </div>
+                        {% endif %}
+                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- 高分电影 -->
+{% if top_rated_movies %}
+<div class="mb-5">
+    <h2 class="mb-3">高分推荐</h2>
+    <div class="row">
+        {% for movie in top_rated_movies %}
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100">
+                {% if movie.image_url %}
+                <img src="{{ movie.image_url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 150px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                    <i class="fas fa-film fa-2x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">{{ movie.title }} ({{ movie.year }})</h6>
+                    <div class="mt-auto">
+                        {% if movie.rating %}
+                        <div class="mb-2">
+                            <span class="badge bg-success">评分: {{ movie.rating }}</span>
+                        </div>
+                        {% endif %}
+                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="text-center">
+    <a href="{{ url_for('movies.movie_list') }}" class="btn btn-primary">浏览完整清单</a>
+</div>
+{% endblock %}

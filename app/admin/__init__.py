@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
-from app.models import Post, Category, Tag, Comment
+from app.models import Post, Category, Tag, Comment, Message
 
 bp = Blueprint('admin', __name__)
 
@@ -106,3 +106,78 @@ def toggle_comment(id):
     status = "已批准" if comment.is_approved else "未批准"
     flash(f'评论状态已更新为{status}')
     return redirect(url_for('admin.comments'))
+
+
+@bp.route('/messages')
+def messages():
+    page = request.args.get('page', 1, type=int)
+    messages = Message.query.order_by(Message.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    return render_template('admin/messages.html', messages=messages)
+
+
+@bp.route('/message/<int:id>/toggle', methods=['POST'])
+def toggle_message(id):
+    message = Message.query.get_or_404(id)
+    message.is_approved = not message.is_approved
+    db.session.commit()
+    status = "已批准" if message.is_approved else "未批准"
+    flash(f'留言状态已更新为{status}')
+    return redirect(url_for('admin.messages'))
+
+
+@bp.route('/message/<int:id>/delete', methods=['POST'])
+def delete_message(id):
+    message = Message.query.get_or_404(id)
+    db.session.delete(message)
+    db.session.commit()
+    flash('留言删除成功')
+    return redirect(url_for('admin.messages'))
+
+
+@bp.route('/movies')
+def movies():
+    page = request.args.get('page', 1, type=int)
+    movies = Movie.query.order_by(Movie.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    return render_template('admin/movies.html', movies=movies)
+
+
+@bp.route('/movie/new', methods=['GET', 'POST'])
+@bp.route('/movie/<int:id>/edit', methods=['GET', 'POST'])
+def edit_movie(id=None):
+    movie = Movie() if id is None else Movie.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        movie.title = request.form['title']
+        movie.description = request.form['description']
+        movie.year = request.form.get('year', type=int)
+        movie.rating = request.form.get('rating', type=float)
+        movie.image_url = request.form['image_url']
+        movie.netflix_url = request.form['netflix_url']
+        movie.category = request.form['category']
+        movie.genre = request.form['genre']
+        movie.is_featured = bool(request.form.get('is_featured'))
+        
+        if id is None:
+            db.session.add(movie)
+        
+        try:
+            db.session.commit()
+            flash('电影信息保存成功')
+        except Exception as e:
+            db.session.rollback()
+            flash('电影信息保存失败，请稍后重试')
+        
+        return redirect(url_for('admin.movies'))
+    
+    return render_template('admin/edit_movie.html', movie=movie)
+
+
+@bp.route('/movie/<int:id>/delete', methods=['POST'])
+def delete_movie(id):
+    movie = Movie.query.get_or_404(id)
+    db.session.delete(movie)
+    db.session.commit()
+    flash('电影删除成功')
+    return redirect(url_for('admin.movies'))

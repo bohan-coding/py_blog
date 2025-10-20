@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}留言本 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="page-title">留言本</h2>
+            
+            <!-- 留言表单 -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>发表留言</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('main.message_board') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="mb-3">
+                            <label for="author_name" class="form-label">姓名 *</label>
+                            <input type="text" class="form-control" id="author_name" name="author_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="author_email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="author_email" name="author_email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="author_website" class="form-label">网站</label>
+                            <input type="url" class="form-control" id="author_website" name="author_website" placeholder="https://example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">留言内容 *</label>
+                            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">提交留言</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 留言列表 -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>留言列表</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <h6>
+                                    {{ message.author_name }}
+                                    {% if message.author_website %}
+                                        <a href="{{ message.author_website }}" target="_blank" class="text-muted small">
+                                            <i class="fas fa-link"></i>
+                                        </a>
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted">{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            {% if message.author_email %}
+                                <small class="text-muted">{{ message.author_email }}</small>
+                            {% endif %}
+                            <p class="mt-2">{{ message.content }}</p>
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- 分页 -->
+                        {% if pagination.pages > 1 %}
+                        <nav aria-label="留言分页">
+                            <ul class="pagination justify-content-center">
+                                {% if pagination.has_prev %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('main.message_board', page=pagination.prev_num) }}">上一页</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">上一页</span>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for page_num in pagination.iter_pages() %}
+                                    {% if page_num %}
+                                        {% if page_num != pagination.page %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('main.message_board', page=page_num) }}">{{ page_num }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ page_num }}</span>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">…</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if pagination.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('main.message_board', page=pagination.next_num) }}">下一页</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">下一页</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-center text-muted">暂无留言，快来发表第一条留言吧！</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>留言须知</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>留言需要填写姓名</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>邮箱和网站为可选字段</li>
+                        <li class="mb-2"><i class="fas fa-exclamation-circle text-warning me-2"></i>留言需要审核后才会显示</li>
+                        <li class="mb-2"><i class="fas fa-exclamation-circle text-warning me-2"></i>请勿发表不当言论</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
