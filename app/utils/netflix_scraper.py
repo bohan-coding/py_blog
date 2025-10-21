@@ -27,7 +27,7 @@ class NetflixScraper:
     
     def scrape_douban_top_movies(self, limit=20):
         """
-        从豆瓣电影Top250爬取高分电影数据
+        从豆瓣电影Top250爬取高分电影数据，包括真实图片链接
         """
         try:
             movies = []
@@ -60,6 +60,15 @@ class NetflixScraper:
                             
                         title = title_element.text.strip()
                         
+                        # 获取图片链接
+                        img_element = item.select_one('.pic img')
+                        image_url = ''
+                        if img_element and img_element.get('src'):
+                            image_url = img_element['src']
+                            # 转换为较大尺寸的图片
+                            image_url = image_url.replace('/s_ratio_poster/', '/l_ratio_poster/')
+                            image_url = image_url.replace('/m_ratio_poster/', '/l_ratio_poster/')
+                        
                         # 获取其他信息
                         info_text = item.select_one('.bd p').text.strip()
                         
@@ -88,13 +97,12 @@ class NetflixScraper:
                         # 获取电影详情页链接
                         detail_link = item.select_one('.hd a')['href'] if item.select_one('.hd a') else ""
                         
-                        # 生成模拟的网飞URL和图片
                         movie_data = {
                             'title': title,
                             'description': description,
                             'year': year,
                             'rating': rating,
-                            'image_url': f'https://via.placeholder.com/300x450/4a6fa5/FFFFFF?text={title.replace(" ", "+")}',
+                            'image_url': image_url,
                             'netflix_url': detail_link or f'https://movie.douban.com/subject/movie-{len(movies)+1}',
                             'category': '电影',
                             'genre': genre
@@ -125,7 +133,7 @@ class NetflixScraper:
     
     def scrape_douban_nowplaying(self, limit=20):
         """
-        从豆瓣电影正在热映爬取最新电影数据
+        从豆瓣电影正在热映爬取最新电影数据，包括真实图片链接
         """
         try:
             url = "https://movie.douban.com/cinema/nowplaying/beijing/"
@@ -161,18 +169,21 @@ class NetflixScraper:
                     # 获取简介
                     description = f"正在热映的{genre}作品。"
                     
-                    # 生成图片URL（使用豆瓣的图片服务）
-                    image_url = item.select_one('img')['src'] if item.select_one('img') else ''
-                    if image_url:
+                    # 获取图片URL
+                    image_url = ''
+                    img_element = item.select_one('img')
+                    if img_element and img_element.get('src'):
+                        image_url = img_element['src']
                         # 转换为较大尺寸的图片
                         image_url = image_url.replace('/s_ratio_poster/', '/l_ratio_poster/')
+                        image_url = image_url.replace('/m_ratio_poster/', '/l_ratio_poster/')
                     
                     movie_data = {
                         'title': title,
                         'description': description,
                         'year': year,
                         'rating': rating,
-                        'image_url': image_url or f'https://via.placeholder.com/300x450/4a6fa5/FFFFFF?text={title.replace(" ", "+")}',
+                        'image_url': image_url,
                         'netflix_url': f'https://movie.douban.com/subject/{movie_id}/',
                         'category': genre,
                         'genre': genre
@@ -220,6 +231,9 @@ class NetflixScraper:
                     title = title_element.text.strip()
                     detail_link = title_element['href']
                     
+                    # 获取图片链接（从详情页链接中提取）
+                    image_url = ''
+                    
                     # 获取类型
                     genre_element = row.select_one('td:nth-child(3)')
                     genre = genre_element.text.strip() if genre_element else '电影'
@@ -240,7 +254,7 @@ class NetflixScraper:
                         'description': description,
                         'year': None,  # 即将上映，暂无年份
                         'rating': None,  # 未上映，暂无评分
-                        'image_url': f'https://via.placeholder.com/300x450/4a6fa5/FFFFFF?text={title.replace(" ", "+")}',
+                        'image_url': image_url,
                         'netflix_url': detail_link,
                         'category': '电影',
                         'genre': genre
@@ -258,6 +272,33 @@ class NetflixScraper:
         except Exception as e:
             print(f"爬取豆瓣即将上映电影数据时出错: {e}")
             return []
+    
+    def get_movie_poster_from_detail_page(self, detail_url):
+        """
+        从电影详情页获取海报图片
+        """
+        try:
+            print(f"正在从详情页获取海报图片: {detail_url}")
+            response = self.session.get(detail_url, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # 查找海报图片
+            poster_element = soup.select_one('#mainpic img')
+            if poster_element and poster_element.get('src'):
+                image_url = poster_element['src']
+                # 转换为较大尺寸的图片
+                image_url = image_url.replace('/s_ratio_poster/', '/l_ratio_poster/')
+                image_url = image_url.replace('/m_ratio_poster/', '/l_ratio_poster/')
+                print(f"成功获取海报图片: {image_url}")
+                return image_url
+            
+            print("未找到海报图片")
+            return ''
+        except Exception as e:
+            print(f"从详情页获取海报图片时出错: {e}")
+            return ''
     
     def scrape_multiple_douban_sources(self, limit=30):
         """
@@ -280,6 +321,13 @@ class NetflixScraper:
         coming_soon = self.scrape_douban_coming_soon(min(limit//3, 5))
         all_movies.extend(coming_soon)
         
+        # 对于没有图片的电影，尝试从详情页获取
+        for movie in all_movies:
+            if not movie['image_url'] and movie['netflix_url']:
+                print(f"正在从详情页获取 {movie['title']} 的海报图片...")
+                movie['image_url'] = self.get_movie_poster_from_detail_page(movie['netflix_url'])
+                time.sleep(1)  # 避免请求过快
+        
         # 去重处理
         unique_movies = []
         seen_titles = set()
@@ -298,6 +346,9 @@ class NetflixScraper:
         added_count = 0
         updated_count = 0
         
+        # 确保在应用上下文中运行
+        from app import db
+        
         for movie_data in movies_data:
             # 检查电影是否已存在（通过标题）
             existing_movie = Movie.query.filter_by(title=movie_data['title']).first()
@@ -307,7 +358,9 @@ class NetflixScraper:
                 existing_movie.description = movie_data['description']
                 existing_movie.year = movie_data['year']
                 existing_movie.rating = movie_data['rating']
-                existing_movie.image_url = movie_data['image_url']
+                # 只有当新图片URL不为空且不是占位符时才更新
+                if movie_data['image_url'] and 'example.com' not in movie_data['image_url'] and 'placeholder.com' not in movie_data['image_url']:
+                    existing_movie.image_url = movie_data['image_url']
                 existing_movie.netflix_url = movie_data['netflix_url']
                 existing_movie.category = movie_data['category']
                 existing_movie.genre = movie_data['genre']
