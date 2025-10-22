@@ -72,7 +72,7 @@
                         <span class="badge bg-warning text-dark">评分: {{ movie.rating }}</span>
                     </div>
                     {% endif %}
-                    <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-primary">查看详情</a>
+                    <a href="{{ url_for('main_movies.detail', id=movie.id) }}" class="btn btn-primary">查看详情</a>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
     <ul class="pagination justify-content-center">
         {% if movies.has_prev %}
         <li class="page-item">
-            <a class="page-link" href="{{ url_for('movies.movie_list', page=movies.prev_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">上一页</a>
+            <a class="page-link" href="{{ url_for('main_movies.movie_list', page=movies.prev_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">上一页</a>
         </li>
         {% endif %}
         
@@ -94,7 +94,7 @@
             {% if page_num %}
                 {% if page_num != movies.page %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('movies.movie_list', page=page_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">{{ page_num }}</a>
+                    <a class="page-link" href="{{ url_for('main_movies.movie_list', page=page_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">{{ page_num }}</a>
                 </li>
                 {% else %}
                 <li class="page-item active">
@@ -110,7 +110,7 @@
         
         {% if movies.has_next %}
         <li class="page-item">
-            <a class="page-link" href="{{ url_for('movies.movie_list', page=movies.next_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">下一页</a>
+            <a class="page-link" href="{{ url_for('main_movies.movie_list', page=movies.next_num, category=current_category, genre=current_genre, sort_by=current_sort) }}">下一页</a>
         </li>
         {% endif %}
     </ul>

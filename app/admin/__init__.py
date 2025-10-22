@@ -10,7 +10,7 @@ bp = Blueprint('admin', __name__)
 def before_request():
     if not current_user.is_admin:
         flash('您没有权限访问该页面')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('blog.index'))
 
 @bp.route('/')
 @bp.route('/dashboard')

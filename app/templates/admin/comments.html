@@ -25,7 +25,7 @@
             <tr>
                 <td>{{ comment.id }}</td>
                 <td>
-                    <a href="{{ url_for('main.post', id=comment.post.id) }}" target="_blank">
+                    <a href="{{ url_for('blog.post', id=comment.post.id) }}" target="_blank">
                         {{ comment.post.title }}
                     </a>
                 </td>

@@ -14,7 +14,7 @@
                     <h5>发表留言</h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('main.message_board') }}">
+                    <form method="POST" action="{{ url_for('message_board.index') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="mb-3">
                             <label for="author_name" class="form-label">姓名 *</label>
@@ -70,7 +70,7 @@
                             <ul class="pagination justify-content-center">
                                 {% if pagination.has_prev %}
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('main.message_board', page=pagination.prev_num) }}">上一页</a>
+                                        <a class="page-link" href="{{ url_for('message_board.index', page=pagination.prev_num) }}">上一页</a>
                                     </li>
                                 {% else %}
                                     <li class="page-item disabled">
@@ -82,7 +82,7 @@
                                     {% if page_num %}
                                         {% if page_num != pagination.page %}
                                             <li class="page-item">
-                                                <a class="page-link" href="{{ url_for('main.message_board', page=page_num) }}">{{ page_num }}</a>
+                                                <a class="page-link" href="{{ url_for('message_board.index', page=page_num) }}">{{ page_num }}</a>
                                             </li>
                                         {% else %}
                                             <li class="page-item active">
@@ -98,7 +98,7 @@
                                 
                                 {% if pagination.has_next %}
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('main.message_board', page=pagination.next_num) }}">下一页</a>
+                                        <a class="page-link" href="{{ url_for('message_board.index', page=pagination.next_num) }}">下一页</a>
                                     </li>
                                 {% else %}
                                     <li class="page-item disabled">

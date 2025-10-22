@@ -26,7 +26,7 @@
             <span class="meta-item">
               <i class="fas fa-folder"></i>
               {% if post.category %}
-                <a href="{{ url_for('main.category', id=post.category.id) }}">{{ post.category.name }}</a>
+                <a href="{{ url_for('blog.category', id=post.category.id) }}">{{ post.category.name }}</a>
               {% else %}
                 未分类
               {% endif %}
@@ -42,7 +42,7 @@
         <div class="article-tags">
           <h4>标签:</h4>
           {% for tag in post.tags %}
-            <a href="{{ url_for('main.tag', id=tag.id) }}" class="tag">{{ tag.name }}</a>
+            <a href="{{ url_for('blog.tag', id=tag.id) }}" class="tag">{{ tag.name }}</a>
           {% endfor %}
         </div>
         {% endif %}
@@ -95,7 +95,7 @@
               <ul class="recent-posts">
                 {% for related_post in related_posts %}
                   <li>
-                    <a href="{{ url_for('main.post', id=related_post.id) }}">{{ related_post.title }}</a>
+                    <a href="{{ url_for('blog.post', id=related_post.id) }}">{{ related_post.title }}</a>
                   </li>
                 {% endfor %}
               </ul>

@@ -12,7 +12,7 @@
         <article class="article-card">
           <div class="article-header">
             <h2 class="article-title">
-              <a href="{{ url_for('main.post', id=post.id) }}">{{ post.title }}</a>
+              <a href="{{ url_for('blog.post', id=post.id) }}">{{ post.title }}</a>
             </h2>
             <div class="article-meta">
               <span class="meta-item">
@@ -26,7 +26,7 @@
               <span class="meta-item">
                 <i class="fas fa-folder"></i>
                 {% if post.category %}
-                  <a href="{{ url_for('main.category', id=post.category.id) }}">{{ post.category.name }}</a>
+                  <a href="{{ url_for('blog.category', id=post.category.id) }}">{{ post.category.name }}</a>
                 {% else %}
                   未分类
                 {% endif %}
@@ -42,11 +42,11 @@
             <div class="article-tags">
               {% if post.tags %}
                 {% for tag in post.tags %}
-                  <a href="{{ url_for('main.tag', id=tag.id) }}" class="tag">{{ tag.name }}</a>
+                  <a href="{{ url_for('blog.tag', id=tag.id) }}" class="tag">{{ tag.name }}</a>
                 {% endfor %}
               {% endif %}
             </div>
-            <a href="{{ url_for('main.post', id=post.id) }}" class="read-more">阅读更多</a>
+            <a href="{{ url_for('blog.post', id=post.id) }}" class="read-more">阅读更多</a>
           </div>
         </article>
         {% else %}
@@ -62,7 +62,7 @@
         <ul class="pagination">
           {% if posts.has_prev %}
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.index', page=posts.prev_num) }}">上一页</a>
+            <a class="page-link" href="{{ url_for('blog.index', page=posts.prev_num) }}">上一页</a>
           </li>
           {% endif %}
           
@@ -70,7 +70,7 @@
           {% if page_num %}
           {% if page_num != posts.page %}
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+            <a class="page-link" href="{{ url_for('blog.index', page=page_num) }}">{{ page_num }}</a>
           </li>
           {% else %}
           <li class="page-item active">
@@ -86,7 +86,7 @@
           
           {% if posts.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.index', page=posts.next_num) }}">下一页</a>
+            <a class="page-link" href="{{ url_for('blog.index', page=posts.next_num) }}">下一页</a>
           </li>
           {% endif %}
         </ul>
@@ -110,7 +110,7 @@
             <ul class="recent-posts">
               {% for post in recent_posts %}
               <li>
-                <a href="{{ url_for('main.post', id=post.id) }}">{{ post.title }}</a>
+                <a href="{{ url_for('blog.post', id=post.id) }}">{{ post.title }}</a>
               </li>
               {% endfor %}
             </ul>
@@ -123,7 +123,7 @@
             <ul class="categories">
               {% for category in categories %}
               <li>
-                <a href="{{ url_for('main.category', id=category.id) }}">{{ category.name }}</a>
+                <a href="{{ url_for('blog.category', id=category.id) }}">{{ category.name }}</a>
                 <span class="count">({{ category.posts.filter_by(is_published=True).count() }})</span>
               </li>
               {% endfor %}
@@ -136,7 +136,7 @@
           <div class="widget-content">
             <div class="tags-cloud">
               {% for tag in tags %}
-              <a href="{{ url_for('main.tag', id=tag.id) }}" class="tag-cloud-item">{{ tag.name }}</a>
+              <a href="{{ url_for('blog.tag', id=tag.id) }}" class="tag-cloud-item">{{ tag.name }}</a>
               {% endfor %}
             </div>
           </div>

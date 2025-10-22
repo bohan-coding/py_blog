@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import Movie, MovieReview
 
-bp = Blueprint('movies', __name__, url_prefix='/movies')
+bp = Blueprint('main_movies', __name__, url_prefix='/movies')
 
 @bp.route('/')
 def index():
@@ -93,17 +93,17 @@ def add_review(id):
     # 验证数据
     if not rating or rating < 1 or rating > 10:
         flash('请选择有效的评分（1-10分）')
-        return redirect(url_for('movies.detail', id=id))
+        return redirect(url_for('main_movies.detail', id=id))
     
     if not comment:
         flash('请填写评论内容')
-        return redirect(url_for('movies.detail', id=id))
+        return redirect(url_for('main_movies.detail', id=id))
     
     # 检查用户是否已经评论过这部电影
     existing_review = MovieReview.query.filter_by(movie_id=id, author_id=current_user.id).first()
     if existing_review:
         flash('您已经评论过这部电影了')
-        return redirect(url_for('movies.detail', id=id))
+        return redirect(url_for('main_movies.detail', id=id))
     
     # 创建新评论
     review = MovieReview(
@@ -121,7 +121,7 @@ def add_review(id):
         db.session.rollback()
         flash('评论添加失败，请稍后重试')
     
-    return redirect(url_for('movies.detail', id=id))
+    return redirect(url_for('main_movies.detail', id=id))
 
 @bp.route('/<int:id>/toggle_featured', methods=['POST'])
 @login_required
@@ -129,7 +129,7 @@ def toggle_featured(id):
     """切换电影推荐状态（仅管理员）"""
     if not current_user.is_admin:
         flash('您没有权限执行此操作')
-        return redirect(url_for('movies.index'))
+        return redirect(url_for('main_movies.index'))
     
     movie = Movie.query.get_or_404(id)
     movie.is_featured = not movie.is_featured
@@ -142,4 +142,4 @@ def toggle_featured(id):
         db.session.rollback()
         flash('操作失败，请稍后重试')
     
-    return redirect(url_for('movies.detail', id=id))
+    return redirect(url_for('main_movies.detail', id=id))

@@ -32,7 +32,7 @@
                             <span class="badge bg-warning text-dark">评分: {{ movie.rating }}</span>
                         </div>
                         {% endif %}
-                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-primary">查看详情</a>
+                        <a href="{{ url_for('main_movies.detail', id=movie.id) }}" class="btn btn-primary">查看详情</a>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                             <small class="text-muted">评分: {{ movie.rating }}</small>
                         </div>
                         {% endif %}
-                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
+                        <a href="{{ url_for('main_movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                             <span class="badge bg-success">评分: {{ movie.rating }}</span>
                         </div>
                         {% endif %}
-                        <a href="{{ url_for('movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
+                        <a href="{{ url_for('main_movies.detail', id=movie.id) }}" class="btn btn-sm btn-outline-primary">查看</a>
                     </div>
                 </div>
             </div>
@@ -109,6 +109,6 @@
 {% endif %}
 
 <div class="text-center">
-    <a href="{{ url_for('movies.movie_list') }}" class="btn btn-primary">浏览完整清单</a>
+    <a href="{{ url_for('main_movies.movie_list') }}" class="btn btn-primary">浏览完整清单</a>
 </div>
 {% endblock %}

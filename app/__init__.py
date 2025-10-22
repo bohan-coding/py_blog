@@ -35,17 +35,30 @@ def create_app():
     csrf.init_app(app)
     
     # 注册蓝图
-    from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
+    # 移除旧的主蓝图注册
+    # from app.main import bp as main_bp
+    # app.register_blueprint(main_bp)
+    
+    # 注册新的蓝图
+    from app.main.blog import bp as blog_bp
+    app.register_blueprint(blog_bp)
+    
+    from app.main.weather import bp as weather_bp
+    app.register_blueprint(weather_bp)
+    
+    from app.main.message_board import bp as message_board_bp
+    app.register_blueprint(message_board_bp)
+    
+    from app.main.article import bp as article_bp
+    app.register_blueprint(article_bp)
+    
+    from app.main.movies import bp as movies_bp
+    app.register_blueprint(movies_bp)
     
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
     
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
-    
-    # 注册电影蓝图
-    from app.movies import bp as movies_bp
-    app.register_blueprint(movies_bp)
     
     return app

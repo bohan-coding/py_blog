@@ -64,10 +64,22 @@ py_blog/
 │   ├── templates/       # HTML模板
 │   ├── static/          # 静态文件
 │   ├── main/            # 前台功能
+│   │   ├── blog.py      # 博客核心功能
+│   │   ├── weather.py   # 天气查询功能
+│   │   ├── message_board.py  # 留言本功能
+│   │   ├── article.py   # 知识库文章功能
+│   │   ├── movies.py    # 电影清单功能
+│   │   └── __init__.py  # 主蓝图初始化
 │   ├── auth/            # 认证功能
 │   ├── admin/           # 后台管理
-│   ├── __init__.py      # 应用初始化
-│   └── models.py        # 数据模型
+│   ├── models/          # 数据模型包
+│   │   ├── __init__.py  # 模型包初始化
+│   │   ├── user_models.py    # 用户相关模型
+│   │   ├── blog_models.py    # 博客相关模型
+│   │   ├── message_models.py # 留言相关模型
+│   │   └── movie_models.py   # 电影相关模型
+│   ├── utils/           # 工具函数
+│   └── __init__.py      # 应用初始化
 ├── config.py            # 配置文件
 ├── requirements.txt     # 依赖包列表
 ├── run.py               # 应用启动文件
@@ -92,7 +104,7 @@ py_blog/
 
 ## 开发说明
 
-1. 数据模型定义在 `app/models.py` 文件中
+1. 数据模型定义在 `app/models/` 目录中，按业务领域拆分为多个文件
 2. 路由和视图函数分别在 `app/main/`, `app/auth/`, `app/admin/` 目录中
 3. 模板文件位于 `app/templates/` 目录中
 4. 静态文件（CSS、JS、图片等）应放在 `app/static/` 目录中

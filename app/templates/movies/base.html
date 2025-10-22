@@ -11,9 +11,9 @@
                 <h5 class="widget-title">电影分类</h5>
                 <div class="widget-content">
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('movies.movie_list') }}">全部</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', category='电影') }}">电影</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', category='电视剧') }}">电视剧</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list') }}">全部</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', category='电影') }}">电影</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', category='电视剧') }}">电视剧</a></li>
                     </ul>
                 </div>
             </div>
@@ -22,11 +22,11 @@
                 <h5 class="widget-title">热门类型</h5>
                 <div class="widget-content">
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('movies.movie_list', genre='剧情') }}">剧情</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', genre='喜剧') }}">喜剧</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', genre='动作') }}">动作</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', genre='科幻') }}">科幻</a></li>
-                        <li><a href="{{ url_for('movies.movie_list', genre='恐怖') }}">恐怖</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', genre='剧情') }}">剧情</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', genre='喜剧') }}">喜剧</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', genre='动作') }}">动作</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', genre='科幻') }}">科幻</a></li>
+                        <li><a href="{{ url_for('main_movies.movie_list', genre='恐怖') }}">恐怖</a></li>
                     </ul>
                 </div>
             </div>
