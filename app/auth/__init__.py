@@ -39,10 +39,12 @@ def register():
             return redirect(url_for('auth.register'))
         
         # 创建新用户
-        user = User(username=username, email=email)
+        user = User()
+        user.username = username
+        user.email = email
         user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
+        db.session.add(user)  # type: ignore
+        db.session.commit()  # type: ignore
         
         flash('注册成功，请登录')
         return redirect(url_for('auth.login'))

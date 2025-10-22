@@ -367,25 +367,24 @@ class NetflixScraper:
                 updated_count += 1
             else:
                 # 添加新电影
-                movie = Movie(
-                    title=movie_data['title'],
-                    description=movie_data['description'],
-                    year=movie_data['year'],
-                    rating=movie_data['rating'],
-                    image_url=movie_data['image_url'],
-                    netflix_url=movie_data['netflix_url'],
-                    category=movie_data['category'],
-                    genre=movie_data['genre']
-                )
-                db.session.add(movie)
+                movie = Movie()
+                movie.title = movie_data['title']
+                movie.description = movie_data['description']
+                movie.year = movie_data['year']
+                movie.rating = movie_data['rating']
+                movie.image_url = movie_data['image_url']
+                movie.netflix_url = movie_data['netflix_url']
+                movie.category = movie_data['category']
+                movie.genre = movie_data['genre']
+                db.session.add(movie)  # type: ignore
                 added_count += 1
         
         try:
-            db.session.commit()
+            db.session.commit()  # type: ignore
             print(f"成功添加 {added_count} 部新电影，更新 {updated_count} 部电影")
             return True
         except Exception as e:
-            db.session.rollback()
+            db.session.rollback()  # type: ignore
             print(f"保存电影数据时出错: {e}")
             return False
     

@@ -18,8 +18,8 @@ def reset_movies():
     
     with app.app_context():
         # 删除所有电影数据
-        count = Movie.query.delete()
-        db.session.commit()
+        count = Movie.query.delete()  # type: ignore
+        db.session.commit()  # type: ignore
         print(f"已删除 {count} 部电影")
         
         return True

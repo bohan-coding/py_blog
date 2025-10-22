@@ -51,8 +51,8 @@ def movie_list():
     movies = query.paginate(page=page, per_page=12, error_out=False)
     
     # 获取所有分类和类型用于筛选
-    categories = db.session.query(Movie.category).distinct().all()
-    genres = db.session.query(Movie.genre).distinct().all()
+    categories = db.session.query(Movie.category).distinct().all()  # type: ignore
+    genres = db.session.query(Movie.genre).distinct().all()  # type: ignore
     
     return render_template('movies/list.html', 
                          movies=movies,
@@ -106,19 +106,18 @@ def add_review(id):
         return redirect(url_for('main_movies.detail', id=id))
     
     # 创建新评论
-    review = MovieReview(
-        rating=rating,
-        comment=comment,
-        movie_id=id,
-        author_id=current_user.id
-    )
+    review = MovieReview()
+    review.rating = rating
+    review.comment = comment
+    review.movie_id = id
+    review.author_id = current_user.id
     
     try:
-        db.session.add(review)
-        db.session.commit()
+        db.session.add(review)  # type: ignore
+        db.session.commit()  # type: ignore
         flash('评论添加成功')
     except Exception as e:
-        db.session.rollback()
+        db.session.rollback()  # type: ignore
         flash('评论添加失败，请稍后重试')
     
     return redirect(url_for('main_movies.detail', id=id))
@@ -135,11 +134,11 @@ def toggle_featured(id):
     movie.is_featured = not movie.is_featured
     
     try:
-        db.session.commit()
+        db.session.commit()  # type: ignore
         status = "推荐" if movie.is_featured else "取消推荐"
         flash(f'电影已{status}')
     except Exception as e:
-        db.session.rollback()
+        db.session.rollback()  # type: ignore
         flash('操作失败，请稍后重试')
     
     return redirect(url_for('main_movies.detail', id=id))

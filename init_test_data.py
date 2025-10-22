@@ -6,22 +6,27 @@ def init_test_data():
     app = create_app()
     with app.app_context():
         # 清空现有数据
-        db.session.query(Post).delete()
-        db.session.query(Category).delete()
-        db.session.query(Tag).delete()
-        db.session.query(Comment).delete()
-        db.session.commit()
+        db.session.query(Post).delete()  # type: ignore
+        db.session.query(Category).delete()  # type: ignore
+        db.session.query(Tag).delete()  # type: ignore
+        db.session.query(Comment).delete()  # type: ignore
+        db.session.commit()  # type: ignore
         
         # 创建用户
         admin = User.query.filter_by(username='admin').first()
         if not admin:
-            admin = User(username='admin', email='admin@example.com', is_admin=True)
+            admin = User()
+            admin.username = 'admin'
+            admin.email = 'admin@example.com'
+            admin.is_admin = True
             admin.set_password('admin123')
-            db.session.add(admin)
+            db.session.add(admin)  # type: ignore
         
-        user1 = User(username='user1', email='user1@example.com')
+        user1 = User()
+        user1.username = 'user1'
+        user1.email = 'user1@example.com'
         user1.set_password('password123')
-        db.session.add(user1)
+        db.session.add(user1)  # type: ignore
         
         # 创建分类
         categories_data = [
@@ -35,11 +40,12 @@ def init_test_data():
         for cat_data in categories_data:
             category = Category.query.filter_by(name=cat_data['name']).first()
             if not category:
-                category = Category(name=cat_data['name'])
-                db.session.add(category)
+                category = Category()
+                category.name = cat_data['name']
+                db.session.add(category)  # type: ignore
             categories.append(category)
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         
         # 创建标签
         tags_data = ['Python', 'Flask', 'MySQL', 'Web开发', '生活', '旅行', '读书']
@@ -47,11 +53,12 @@ def init_test_data():
         for tag_name in tags_data:
             tag = Tag.query.filter_by(name=tag_name).first()
             if not tag:
-                tag = Tag(name=tag_name)
-                db.session.add(tag)
+                tag = Tag()
+                tag.name = tag_name
+                db.session.add(tag)  # type: ignore
             tags.append(tag)
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         
         # 创建文章
         posts_data = [
@@ -104,25 +111,24 @@ def init_test_data():
         
         posts = []
         for post_data in posts_data:
-            post = Post(
-                title=post_data['title'],
-                content=post_data['content'],
-                summary=post_data['summary'],
-                author=post_data['author'],
-                category=post_data['category'],
-                is_published=post_data['is_published']
-            )
-            db.session.add(post)
+            post = Post()
+            post.title = post_data['title']
+            post.content = post_data['content']
+            post.summary = post_data['summary']
+            post.author = post_data['author']
+            post.category = post_data['category']
+            post.is_published = post_data['is_published']
+            db.session.add(post)  # type: ignore
             posts.append(post)
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         
         # 关联文章和标签
         for i, post_data in enumerate(posts_data):
             for tag in post_data['tags']:
                 posts[i].tags.append(tag)
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         
         # 创建评论
         comments_data = [
@@ -145,18 +151,17 @@ def init_test_data():
         ]
         
         for comment_data in comments_data:
-            comment = Comment(
-                content=comment_data['content'],
-                post=comment_data['post']
-            )
+            comment = Comment()
+            comment.content = comment_data['content']
+            comment.post = comment_data['post']
             if 'author' in comment_data:
                 comment.author = comment_data['author']
             else:
                 comment.author_name = comment_data['author_name']
                 comment.author_email = comment_data['author_email']
-            db.session.add(comment)
+            db.session.add(comment)  # type: ignore
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         
         print("测试数据初始化完成！")
         print(f"创建了 {len(categories)} 个分类")

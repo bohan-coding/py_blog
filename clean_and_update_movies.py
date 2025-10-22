@@ -33,10 +33,10 @@ def clean_placeholder_images():
         # 提交更改
         if cleaned_count > 0:
             try:
-                db.session.commit()
+                db.session.commit()  # type: ignore
                 print(f"成功清理 {cleaned_count} 部电影的占位符图片URL")
             except Exception as e:
-                db.session.rollback()
+                db.session.rollback()  # type: ignore
                 print(f"清理占位符图片URL时出错: {e}")
                 return False
         else:
@@ -76,10 +76,10 @@ def update_movie_images():
         # 提交更改
         if updated_count > 0:
             try:
-                db.session.commit()
+                db.session.commit()  # type: ignore
                 print(f"成功更新 {updated_count} 部电影的图片URL")
             except Exception as e:
-                db.session.rollback()
+                db.session.rollback()  # type: ignore
                 print(f"更新图片URL时出错: {e}")
                 return False
         else:

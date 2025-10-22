@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
-from app.models import Post, Category, Tag, Comment, Message
+from app.models import Post, Category, Tag, Comment, Message, Movie
 
 bp = Blueprint('admin', __name__)
 
@@ -41,7 +41,7 @@ def edit_post(id=None):
         
         if id is None:
             post.author_id = current_user.id
-            db.session.add(post)
+            db.session.add(post)  # type: ignore
         
         # 处理标签
         tag_names = [tag.strip() for tag in request.form['tags'].split(',') if tag.strip()]
@@ -49,11 +49,12 @@ def edit_post(id=None):
         for tag_name in tag_names:
             tag = Tag.query.filter_by(name=tag_name).first()
             if not tag:
-                tag = Tag(name=tag_name)
-                db.session.add(tag)
+                tag = Tag()
+                tag.name = tag_name
+                db.session.add(tag)  # type: ignore
             post.tags.append(tag)
         
-        db.session.commit()
+        db.session.commit()  # type: ignore
         flash('文章保存成功')
         return redirect(url_for('admin.posts'))
     
@@ -63,8 +64,8 @@ def edit_post(id=None):
 @bp.route('/post/<int:id>/delete', methods=['POST'])
 def delete_post(id):
     post = Post.query.get_or_404(id)
-    db.session.delete(post)
-    db.session.commit()
+    db.session.delete(post)  # type: ignore
+    db.session.commit()  # type: ignore
     flash('文章删除成功')
     return redirect(url_for('admin.posts'))
 
@@ -77,17 +78,18 @@ def categories():
 def new_category():
     name = request.form['name']
     if name:
-        category = Category(name=name)
-        db.session.add(category)
-        db.session.commit()
+        category = Category()
+        category.name = name
+        db.session.add(category)  # type: ignore
+        db.session.commit()  # type: ignore
         flash('分类创建成功')
     return redirect(url_for('admin.categories'))
 
 @bp.route('/category/<int:id>/delete', methods=['POST'])
 def delete_category(id):
     category = Category.query.get_or_404(id)
-    db.session.delete(category)
-    db.session.commit()
+    db.session.delete(category)  # type: ignore
+    db.session.commit()  # type: ignore
     flash('分类删除成功')
     return redirect(url_for('admin.categories'))
 
@@ -102,7 +104,7 @@ def comments():
 def toggle_comment(id):
     comment = Comment.query.get_or_404(id)
     comment.is_approved = not comment.is_approved
-    db.session.commit()
+    db.session.commit()  # type: ignore
     status = "已批准" if comment.is_approved else "未批准"
     flash(f'评论状态已更新为{status}')
     return redirect(url_for('admin.comments'))
@@ -120,7 +122,7 @@ def messages():
 def toggle_message(id):
     message = Message.query.get_or_404(id)
     message.is_approved = not message.is_approved
-    db.session.commit()
+    db.session.commit()  # type: ignore
     status = "已批准" if message.is_approved else "未批准"
     flash(f'留言状态已更新为{status}')
     return redirect(url_for('admin.messages'))
@@ -129,8 +131,8 @@ def toggle_message(id):
 @bp.route('/message/<int:id>/delete', methods=['POST'])
 def delete_message(id):
     message = Message.query.get_or_404(id)
-    db.session.delete(message)
-    db.session.commit()
+    db.session.delete(message)  # type: ignore
+    db.session.commit()  # type: ignore
     flash('留言删除成功')
     return redirect(url_for('admin.messages'))
 
@@ -160,13 +162,13 @@ def edit_movie(id=None):
         movie.is_featured = bool(request.form.get('is_featured'))
         
         if id is None:
-            db.session.add(movie)
+            db.session.add(movie)  # type: ignore
         
         try:
-            db.session.commit()
+            db.session.commit()  # type: ignore
             flash('电影信息保存成功')
         except Exception as e:
-            db.session.rollback()
+            db.session.rollback()  # type: ignore
             flash('电影信息保存失败，请稍后重试')
         
         return redirect(url_for('admin.movies'))
@@ -177,7 +179,7 @@ def edit_movie(id=None):
 @bp.route('/movie/<int:id>/delete', methods=['POST'])
 def delete_movie(id):
     movie = Movie.query.get_or_404(id)
-    db.session.delete(movie)
-    db.session.commit()
+    db.session.delete(movie)  # type: ignore
+    db.session.commit()  # type: ignore
     flash('电影删除成功')
     return redirect(url_for('admin.movies'))
